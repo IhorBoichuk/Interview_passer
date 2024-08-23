@@ -1,6 +1,7 @@
 import os
 import wave
 import json
+from predictor import conversation
 from utils import messages, recordings
 from vosk import Model, KaldiRecognizer
 
@@ -28,8 +29,9 @@ def speech_recognition():
                 partial_result = rec.PartialResult()
 
     final_result = rec.FinalResult()
-    print(json.loads(final_result)["text"])
-    print("Transcription finished.")
+    conversation(json.loads(final_result)["text"])
+    # print("Transcription finished.")
+
 
 if __name__ == "__main__":
     speech_recognition()
