@@ -1,9 +1,8 @@
 import os
 import wave
 import pyaudio
-from threading import Thread
-from voicetotextmodel import speech_recognition
-from utils import messages, recordings
+from chatbot.voicetotext.voicetotextmodel import speech_recognition
+from recording.utils import messages, recordings
 
 CHANNELS = 1
 FRAME_RATE = 16000

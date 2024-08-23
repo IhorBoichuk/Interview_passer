@@ -1,8 +1,7 @@
 import tkinter as tk
-from queue import Queue
 from threading import Thread
-from record import record_speakers
-from utils import messages, recordings
+from recording.record import record_speakers
+from recording.utils import messages
 
 
 def start_recording():
