@@ -1,8 +1,8 @@
 import os
 import wave
 import pyaudio
-from chatbot.voicetotext.voicetotextmodel import speech_recognition
-from recording.utils import messages, recordings
+# from voicetotext.voicetotextmodel import speech_recognition
+from utils import messages, recordings
 
 CHANNELS = 1
 FRAME_RATE = 16000
@@ -46,4 +46,4 @@ def record_speakers(chunk=1024):
         wf.writeframes(b"".join(frames))
 
     print(f"Recording saved to {OUTPUT_FILENAME}")
-    speech_recognition()
+    # speech_recognition()

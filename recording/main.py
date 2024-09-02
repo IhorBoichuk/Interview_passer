@@ -1,7 +1,7 @@
 import tkinter as tk
 from threading import Thread
-from recording.record import record_speakers
-from recording.utils import messages
+from record import record_speakers
+from utils import messages
 
 
 def start_recording():
@@ -29,8 +29,13 @@ record_button = tk.Button(
 )
 record_button.pack(pady=10)
 
-
-stop_button = tk.Button(root, text="Stop", bg="red", fg="white", command=stop_recording)
+stop_button = tk.Button(
+    root,
+    text="Stop",
+    bg="red",
+    fg="white",
+    command=stop_recording
+    )
 stop_button.pack(pady=10)
 
 output_text = tk.Text(root, wrap="word", height=15, width=50)
