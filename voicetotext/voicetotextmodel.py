@@ -1,44 +1,53 @@
 import os
 import wave
 import json
-from chatbot.predictor import conversation
-from recording.utils import messages, recordings
 from vosk import Model, KaldiRecognizer
+import socket
 
+HOST = '0.0.0.0'  # Слухає на всіх доступних IP
+PORT = 65432      # Порт для прослуховування
+BUFFER_SIZE = 1024  # Розмір буфера для прийому даних
 
-file_path = os.path.join(os.path.dirname(__file__), "output.wav")
-
+# Ініціалізація моделі для розпізнавання мови
 model = Model(model_name="vosk-model-en-us-0.22")
 rec = KaldiRecognizer(model, 16000)
 rec.SetWords(True)
 
-
-def speech_recognition():
-    with wave.open(file_path, "rb") as wf:
-        if wf.getnchannels() != 1:
-            raise ValueError("Audio file must be mono")
-
-        if wf.getframerate() != 16000:
-            raise ValueError("Sample rate of the audio file must be 16000")
-        results = []
+def handle_client(conn, addr):
+    """Функція для обробки клієнтського з'єднання."""
+    print(f'Connected by {addr}')
+    results = []
+    try:
         while True:
-            data = wf.readframes(4000)
-            if len(data) == 0:
-                break
+            data = conn.recv(BUFFER_SIZE)
+            if not data:
+                break  # Якщо даних немає, завершуємо з'єднання
+
             if rec.AcceptWaveform(data):
                 result = json.loads(rec.Result())
                 results.append(result["text"])
-                print("Final Result:", result["text"])
+                print(f"Final Result: {result['text']}")
             else:
                 partial_result = json.loads(rec.PartialResult())
-                print("Partial Result:", partial_result["partial"])
+                print(f"Partial Result: {partial_result['partial']}")
 
-    final_result = json.loads(rec.FinalResult())
-    results.append(final_result["text"])
-    # conversation(" ".join(results))
-    print(" ".join(results))
-    print("Transcription finished.")
+        final_result = json.loads(rec.FinalResult())
+        results.append(final_result["text"])
+        print(f"Final transcription: {' '.join(results)}")
+    except Exception as e:
+        print(f"Error during processing: {e}")
+    finally:
+        conn.close()
+        print("Connection closed")
 
+def speech_recognition_server():
+    """Функція для запуску сервера розпізнавання мови."""
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        s.bind((HOST, PORT))
+        s.listen()
+        print(f"Server listening on {HOST}:{PORT}")
+        
+        while True:
+            conn, addr = s.accept()
+            handle_client(conn, addr)
 
-if __name__ == "__main__":
-    speech_recognition()

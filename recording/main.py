@@ -2,7 +2,10 @@ import tkinter as tk
 from threading import Thread
 from record import record_speakers
 from utils import messages
+import socket
 
+HOST = '172.18.0.2'  # IP-адреса контейнера сервера
+PORT = 65432         # Той самий порт, що й у сервера
 
 def start_recording():
     messages.put(True)
@@ -16,7 +19,10 @@ def start_recording():
 
 def stop_recording():
     if not messages.empty():
-        messages.get()
+        data = messages.get()
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+            s.connect((HOST, PORT))
+            s.sendall(data)
     output_text.insert(tk.END, "Stopped.\n")
     output_text.see(tk.END)
 
