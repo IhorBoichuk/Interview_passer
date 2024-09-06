@@ -5,10 +5,12 @@ FROM python:3.9-slim
 
 # Встановлюємо робочу директорію в контейнері
 WORKDIR /vosk
-
+RUN pip install --upgrade pip
+# Встановлюємо PyTorch із зазначеного джерела
+RUN pip install torch --extra-index-url https://download.pytorch.org/whl/torch_stable.html 
 # Копіюємо requirements.txt і встановлюємо залежності
-COPY requirements.txt ./
-RUN pip install --no-cache-dir -r requirements.txt
+COPY requirements_vosk.txt ./
+RUN pip install --no-cache-dir -r requirements_vosk.txt
 
 COPY . .
 
