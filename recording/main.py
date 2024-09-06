@@ -4,7 +4,7 @@ from record import record_speakers
 from utils import messages
 import socket
 
-HOST = '172.18.0.2'  # IP-адреса контейнера сервера
+HOST = '172.17.0.2'  # IP-адреса контейнера сервера
 PORT = 65432         # Той самий порт, що й у сервера
 
 def start_recording():
